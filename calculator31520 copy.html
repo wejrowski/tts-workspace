@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  </head>
+  <style>
+    #calc {
+      width: 250px;
+      display: flex;
+      flex-flow: wrap;
+      text-align: center;
+      align-items: center;
+      border-radius: 10px;
+    }
+    .button {
+      width: 25%;
+      height: 50px;
+      border: 1px solid dimgray;
+      color: white;
+      font-size: 25px;
+      box-sizing: border-box;
+      padding: 1px 0px 0px 0px;
+    }
+    .c, .plusminus, .percent {
+      background: dimgray;
+    }
+    .output {
+      width: 100%;
+      height: 80px;
+      border-radius: 8px 8px 0px 0px;
+      background-color: dimgray;
+      text-align: right;
+    }
+    .number {
+      background: #3333;
+    }
+    .zero {
+      width: 50%;
+      border-radius: 0px 0px 0px 8px;
+    }
+    .equals {
+      width: 25%;
+      border-radius: 0px 0px 8px 0px;
+    }
+    .operator {
+      background: orange;
+    }
+  </style>
+  <body>
+          first value<input type="text" class="firstValue" placeholder="0"/>
+          second value<input type="text" class="secondValue" placeholder="0"/>
+
+    <div id="calc">
+          <input type="text" class="button output" placeholder="0"/>
+          <input type="button" class="button c" value="C"/>
+          <input type="button" class="button plusminus" value="+/-"/>
+          <input type="button" class="button percent" value="%">
+          <input type="button" class="button operator divide" value="/">
+          <input type="button" class="button number" value="7"/>
+          <input type="button" class="button number" value="8"/>
+          <input type="button" class="button number" value="9"/>
+          <input type="button" class="button operator times" value="x"/>
+          <input type="button" class="button number" value="4"/>
+          <input type="button" class="button number" value="5"/>
+          <input type="button" class="button number" value="6"/>
+          <input type="button" class="button operator subtract" value="-"/>
+          <input type="button" class="button number" value="1"/>
+          <input type="button" class="button number" value="2"/>
+          <input type="button" class="button number" value="3"/>
+          <input type="button" class="button operator add" value="+"/>
+          <input type="button" class="button number zero" value="0"/>
+          <input type="button" class="button number period" value="."/>
+          <input type="button" class="button operator equals" value="="/>
+    </div>
+    <script>
+          var output = document.querySelector('.output');
+          var firstValue= document.querySelector('.firstValue');
+          var secondValue= document.querySelector('.secondValue');
+
+
+          document.querySelectorAll(".number").forEach(function(numberElement) {
+                numberElement.addEventListener("click", function(e){
+                    output.value = output.value + e.currentTarget.value;
+                    firstValue.value=output.value;
+                });
+            });
+
+          document.querySelectorAll(".operator").forEach(function(operatorElement) {
+              operatorElement.addEventListener("click", function(e){
+                  console.log(e.currentTarget.value);
+                  output.value ="";
+                  secondValue.value=firstValue.value;
+              });
+          });
+
+          document.querySelectorAll(".equals").forEach(function(equalsElement) {
+            equalsElement.addEventListener("click", function(e){
+            output.value=firstValue.value+secondValue.value;
+              });
+          });
+
+
+
+
+        //   if (operatorPressed=true) {
+        //     output.value="";
+        //     document.querySelectorAll(".number").forEach(function(numberElement) {
+        //       numberElement.addEventListener("click", function(e){
+        //           output.value = output.value + e.currentTarget.value;
+        //           console.log(output.value);
+        //       });
+        //   });
+        // };
+
+
+          // if (operatorPressed == true) {
+          //   output
+          // }
+
+
+
+          // if (operatorPressed.value === "x"){
+          //   function multiply(output.value, e.currentTarget.value){
+          //      return output.value= output.value*e.currentTarget.value;
+          // };
+
+
+
+
+    </script>
+  </body>
+</html>
