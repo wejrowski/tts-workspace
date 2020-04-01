@@ -1,0 +1,81 @@
+<link href="https://fonts.googleapis.com/css?family=Roboto+Slab&display=swap" rel="stylesheet">
+
+body {
+  font-family: 'Roboto Slab', serif;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+   -khtml-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none; /* did not work */
+
+}
+
+.calc-btn {
+  background-color: silver;
+  color: black;
+  width: 25px;
+  height: 45px;
+  border: 1px solid gray;
+  text-align: center;
+  cursor: pointer;
+  font-size: 32px;
+  font-weight: 100;
+  padding: 3px
+}
+.calc-btn:hover {
+  background: blue;
+}
+
+.rows {
+  display: table;
+  table-layout: fixed;
+  width: 200px;
+
+}
+.column {
+  display: table-cell;
+}
+
+#zero {
+  width: 57.66666667px;
+  border-radius: 0 0 0 7px;
+
+}
+
+#clear {
+  width: 57.66666667px;
+}
+
+
+#Calculator-display {
+  height: 80px; color: green;
+  text-align: right;
+  border-left: 1px solid gray;
+  border-right: 1px solid gray;
+  border-top: 1px solid gray;
+  font-size: 45px;
+  background-color: #383838;
+  overflow: hidden;
+  white-space: nowrap;
+  padding: 12px;
+  border-radius: 7px 7px 0px 0px;
+}
+
+
+.calc-btn-operator {
+  background-color: orange;
+  color: white
+}
+
+#calc-equalsign {
+  border-radius: 0px 0px 7px 0px;
+}
+
+h1 {
+  text-align: center;
+  margin: 50px
+}
+#tts-ParentCalculator {
+  margin-left: calc(50% - 100px);
+}
