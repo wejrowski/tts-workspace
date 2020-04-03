@@ -90,9 +90,10 @@
     var onNumberClick = function(event) {
         var numPressed = event.currentTarget.innerHTML;
 
-        if (isOperatorEngaged()) {
+        if (isOperatorEngaged() && firstTimePressed) {
             calculator.dataset.stashApply = numPressed
             display.value = numPressed;
+            firstTimePressed = false;
             return;
         }
 
