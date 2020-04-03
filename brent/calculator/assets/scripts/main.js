@@ -1,11 +1,7 @@
 (function() {
     'use strict';
 
-        var calculator = document.querySelector('#calculator');
-
-    // TODO, last item: if equals last pressed.. allow user input again...
-    // Also if equals pressed and another operator pressed....
-    // Fix percentage when pressed multiple times
+    var calculator = document.querySelector('#calculator');
 
     var display = calculator.querySelector('#display'),
         clear = calculator.querySelector('.btn--clear'),
@@ -43,16 +39,17 @@
     };
 
     // CLICK FUNCTIONS
+    var firstTimePressed = true;
     var onOperatorClick = function(event) {
+        firstTimePressed = true;
         clearOperatorEngagement();
-        this.classList.add('btn--active');
+        event.currentTarget.classList.add('btn--active');
         calculator.dataset.operator = event.currentTarget.dataset.operator;
         stashDisplay();
     };
 
     var onEqualsClick = function(event) {
-        var displayVal = parseInt(display.value),
-            stashVal = parseInt(calculator.dataset.stash),
+        var stashVal = parseInt(calculator.dataset.stash),
             applyVal = parseInt(calculator.dataset.stashApply);
 
         if (!calculator.dataset.operator) {
