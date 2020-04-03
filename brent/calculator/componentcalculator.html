@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Calculator</title>
+</head>
+<body>
+    <basic-calculator></basic-calculator>
+
+    <template id="basicCalcTemplate">
+        <style>
+            :host {
+                border-radius: 7px;
+                overflow: hidden;
+                font-family: Helvetica, monospace,  sans-serif;
+                font-size: 22px;
+                font-weight: 300;
+                margin: 0px;
+                background: #888;
+                border: 1px solid #888;
+                display: block;
+                width: 208px;
+                margin: 0 auto;
+            }
+            #stash {
+                border: 1px solid #ddd;
+                color: #888;
+            }
+            #output {
+                background: transparent;
+                border: 0;
+                color: white;
+                font-size: 40px;
+                font-weight: 200;
+                margin: 7% 10%;
+                text-align: right;
+                width: 80%;
+            }
+            .buttons {
+                display: flex;
+                flex-wrap: wrap;
+            }
+            .btn {
+                width: 50px;
+                height: 50px;
+                cursor: pointer;
+                line-height: 50px;
+                text-align: center;
+                display: inline-block;
+                background: #ddd;
+                margin: 1px;
+            }
+            .btn.btn--active { /* (1) .btn--active.btn--active (2) .btn.btn--active (3) move it.  */
+                background: #bbb;
+            }
+            .btn--operator, .btn--calculate{
+                background: orange;
+                color: white;
+            }
+            .btn--special {
+                background: #ccc;
+            }
+            .btn--zero {
+                flex: 2;
+            }
+        </style>
+
+        <input id="output" value="0"></input>
+
+        <input type="hidden" id="stash"></input>
+        <input type="hidden" id="selectedFunction"></input>
+
+        <div class="buttons">
+            <div class="btn btn--special btn--clear">C</div>
+            <div class="btn btn--special btn--makeNegative">&plusmn;</div>
+            <div class="btn btn--special btn--percentage">%</div>
+            <div class="btn btn--operator" data-operator="/">&#247;</div>
+            <div class="btn btn--number">7</div>
+            <div class="btn btn--number">8</div>
+            <div class="btn btn--number">9</div>
+            <div class="btn btn--operator" data-operator="*">*</div>
+            <div class="btn btn--number">4</div>
+            <div class="btn btn--number">5</div>
+            <div class="btn btn--number">6</div>
+            <div class="btn btn--operator" data-operator="-">-</div>
+            <div class="btn btn--number">1</div>
+            <div class="btn btn--number">2</div>
+            <div class="btn btn--number">3</div>
+            <div class="btn btn--operator" data-operator="+">+</div>
+            <div class="btn btn--number btn--zero">0</div>
+            <div class="btn btn--decimal">.</div>
+            <div class="btn btn--calculate">=</div>
+        </div>
+    </template>
+<script>
+(function() {
+    'use strict';
+
+    var basicCalculatorPrototype = Object.create(HTMLElement.prototype);
+
+    basicCalculatorPrototype.is = "basic-calculator";
+    basicCalculatorPrototype.attachedCallback = function() {
+        console.log('attached', basicCalculatorPrototype.is);
+
+        var shadowRoot = this.attachShadow({ mode: 'closed' });
+        var templateClone = document.importNode(document.querySelector('#basicCalcTemplate').content, true);
+        shadowRoot.appendChild(templateClone);
+
+        var currentOperator = shadowRoot.querySelector('#selectedFunction'),
+            displayNumber = shadowRoot.querySelector('#output'),
+            stashedNumber = shadowRoot.querySelector('#stash');
+
+        var justPressedFunction = false;
+
+        var clearActiveButtonState = function() {
+            Array.prototype.forEach.call(shadowRoot.querySelectorAll('.btn--operator'), function(functionButton) {
+                functionButton.classList.remove('btn--active');
+            });
+        };
+
+        var lastPressed;// NUMBER, OPERATOR, CALCULATE, OTHER
+
+        var onPressClear = function() {
+            currentOperator.value = stashedNumber.value = "";
+            displayNumber.value = "0";
+            clearActiveButtonState();
+            lastPressed = "OTHER";
+        };
+        var onPressDecimal = function() {
+            if (lastPressed !== "OPERATOR" && this.innerHTML === "." && /\./.test(displayNumber.value)) {
+                return;
+            }
+
+            displayNumber.value = displayNumber.value + ".";
+            lastPressed = "NUMBER";
+        };
+        var onPressNegative = function() {
+            displayNumber.value = parseFloat(displayNumber.value) * -1;
+            clearActiveButtonState();
+            lastPressed = "OTHER";
+        };
+        var onPressPercentage = function() {
+            displayNumber.value = parseFloat(displayNumber.value) * 0.01;
+            clearActiveButtonState();
+            lastPressed = "OTHER";
+        };
+        var justPressedNumber = false;
+        var onPressNumber = function(e) {
+            var pressedNumber = e.currentTarget.innerHTML;
+
+            if (["OPERATOR", "CALCULATE"].includes(lastPressed)) {
+                justPressedFunction = false;
+                displayNumber.value = "";
+            }
+            if (lastPressed === "CALCULATE") {
+                stashedNumber.value = "";
+            }
+
+            if (displayNumber.value === "0") {
+                displayNumber.value = pressedNumber;
+                return;
+            }
+
+            justPressedNumber = true;
+            displayNumber.value = displayNumber.value + pressedNumber;
+            lastPressed = "NUMBER";
+        };
+        var justCalculated = false;
+        var calculate = function() {
+            var expression;
+
+            if (lastPressed !== "CALCULATE") {
+                expression = stashedNumber.value + currentOperator.value + displayNumber.value;
+                stashedNumber.value = displayNumber.value;
+                justCalculated = true;
+            } else {
+                expression = displayNumber.value + currentOperator.value + stashedNumber.value;
+            }
+
+            displayNumber.value = eval(expression);
+            clearActiveButtonState();
+            lastPressed = "CALCULATE";
+        };
+        var onPressOperator = function(e) {
+            // TODO: make awaitingCalculation()?
+            if (lastPressed === "NUMBER" && stashedNumber.value !=="") {
+                calculate();
+            }
+
+            justPressedFunction = true;
+            stashedNumber.value = displayNumber.value;
+            currentOperator.value = e.currentTarget.dataset.operator;
+
+            clearActiveButtonState();
+            e.currentTarget.classList.add('btn--active');
+            lastPressed = "OPERATOR";
+        };
+
+        Array.prototype.forEach.call(shadowRoot.querySelectorAll('.btn--number'), function(numberButton) {
+            numberButton.addEventListener('click', onPressNumber);
+        });
+        Array.prototype.forEach.call(shadowRoot.querySelectorAll('.btn--operator'), function(operatorButton) {
+            operatorButton.addEventListener('click', onPressOperator);
+        });
+        shadowRoot.querySelector('.btn--clear').addEventListener('click', onPressClear);
+        shadowRoot.querySelector('.btn--calculate').addEventListener('click', calculate);
+        shadowRoot.querySelector('.btn--makeNegative').addEventListener('click', onPressNegative);
+        shadowRoot.querySelector('.btn--percentage').addEventListener('click', onPressPercentage);
+        shadowRoot.querySelector('.btn--decimal').addEventListener('click', onPressDecimal);
+
+        Array.prototype.forEach.call(shadowRoot.querySelectorAll('.btn:not(.btn--calculate)'), function(button) {
+            button.addEventListener('click', function() {
+                justCalculated = false;
+            });
+        });
+        Array.prototype.forEach.call(shadowRoot.querySelectorAll('.btn:not(.btn--number)'), function(button) {
+            button.addEventListener('click', function() {
+                justPressedNumber = false;
+            });
+        });
+    };
+
+    document.registerElement(basicCalculatorPrototype.is, { prototype: basicCalculatorPrototype });
+}());
+</script>
+</body>
+</html>

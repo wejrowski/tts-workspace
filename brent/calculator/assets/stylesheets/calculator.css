@@ -1,0 +1,43 @@
+#calculator {
+    font-family: Helvetica, monospace,  sans-serif;
+    font-size: 22px;
+    font-weight: 300;
+    color: white;
+    width: 300px;
+    display: grid;
+    grid-template-columns: 25% 25% 25% 25%;
+    border: 1px solid gray;
+    background: #333;
+}
+#display {
+    box-sizing: border-box;
+    background: transparent;
+    border: 0;
+    color: white;
+    font-size: 40px;
+    font-weight: 200;
+    margin: 7% 10%;
+    text-align: right;
+    width: 90%;
+    grid-column-start: span 4;
+}
+.btn {
+    background: #777;
+    height: 50px;
+    padding: 25px;
+    text-align: center;
+    box-sizing: border-box;
+    margin: 1px;
+}
+.btn--zero {
+    grid-column-start: span 2;
+}
+.btn--special {
+    background: #555;
+}
+.btn--operator, .btn--equals {
+    background: orange;
+}
+.btn--active {
+    background: #ffcc66;
+}
